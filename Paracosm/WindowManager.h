@@ -18,6 +18,7 @@ class WindowManager
     std::thread* message_thread;
     static void  MessageLoop();
 
+    void StartDebugConsole();
 public:
 
     static WindowManager& getInstance() {
@@ -27,6 +28,8 @@ public:
     }
 
     void Init(HINSTANCE hInstances);
+    void Deinit();
+
     void Start();
     void Loop();
 };

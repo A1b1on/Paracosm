@@ -1,6 +1,7 @@
 #include "WindowManager.h"
 
 #include <cstdlib>
+#include <iostream>
 
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -14,6 +15,10 @@ void WindowManager::RegisterWindowClass(HINSTANCE hInstance) {
 }
 
 void WindowManager::Init(HINSTANCE hInstance) {
+
+#ifdef USE_DEBUG_CONSOLE
+    this->StartDebugConsole();
+#endif
 
     this->RegisterWindowClass(hInstance);
 
@@ -36,6 +41,13 @@ void WindowManager::Init(HINSTANCE hInstance) {
     }
 
     ShowWindow(this->hwnd, 1);
+}
+
+void WindowManager::Deinit() {
+
+#ifdef USE_DEBUG_CONSOLE
+    FreeConsole();
+#endif
 }
 
 void WindowManager::MessageLoop() {
@@ -63,6 +75,15 @@ void WindowManager::Loop() {
     MessageLoop();
 }
 
+void WindowManager::StartDebugConsole() {
+
+    FILE* file = nullptr;
+    AllocConsole();
+    AttachConsole(GetCurrentProcessId());
+    freopen_s(&file, "CONOUT$", "w", stdout);
+    SetConsoleTitle(DEBUG_CONSOLE_TITLE);
+    std::cout << "Debug console started" << std::endl;
+}
 
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
